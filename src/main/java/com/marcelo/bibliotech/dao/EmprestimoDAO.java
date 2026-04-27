@@ -55,6 +55,29 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
         return null;
     }
 
+    public Emprestimo findByLivroId(int livroId) {
+    String sql = """
+        SELECT e.*,
+               l.titulo, l.autor, l.disponivel,
+               u.nome, u.matricula, u.multa
+        FROM emprestimos e
+        JOIN livros l ON e.livro_id = l.id
+        JOIN usuarios u ON e.usuario_id = u.id
+        WHERE e.livro_id = ?
+    """;
+    try (Connection conn = ConnectionFactory.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, livroId);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) return mapRow(rs);
+
+    } catch (SQLException e) {
+        System.out.println("Erro ao buscar empréstimo por livro: " + e.getMessage());
+    }
+    return null;
+}
+
     @Override
     public List<Emprestimo> findAll() {
         List<Emprestimo> emprestimos = new ArrayList<>();
