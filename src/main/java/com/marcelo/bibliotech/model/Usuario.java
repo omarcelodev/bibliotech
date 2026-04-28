@@ -57,4 +57,12 @@ public class Usuario {
     public void setId(int id) {
         this.id = id;
     }   
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
 }
