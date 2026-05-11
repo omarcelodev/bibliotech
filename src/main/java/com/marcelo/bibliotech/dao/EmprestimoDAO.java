@@ -133,6 +133,7 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
         }
     }
 
+    
     private Emprestimo mapRow(ResultSet rs) throws SQLException {
         Livro livro = new Livro(
             rs.getInt("livro_id"),
@@ -148,7 +149,12 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
         usuario.setId(rs.getInt("usuario_id"));
         usuario.setMulta(rs.getDouble("multa"));
 
-        Emprestimo emprestimo = new Emprestimo(livro, usuario);
+        Emprestimo emprestimo = new Emprestimo(
+            livro,
+            usuario,
+            rs.getDate("data_retirada").toLocalDate(),
+            rs.getDate("data_devolucao").toLocalDate()
+        );
         emprestimo.setId(rs.getInt("id"));
         return emprestimo;
     }

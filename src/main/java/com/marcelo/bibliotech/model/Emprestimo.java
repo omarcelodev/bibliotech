@@ -12,11 +12,20 @@ public class Emprestimo {
     private static final int DIAS_PRAZO = 7;
     private static final double MULTA_POR_DIA = 2.0;
 
+    // Construtor para novo empréstimo — datas geradas automaticamente
     public Emprestimo(Livro livro, Usuario usuario) {
         this.livro = livro;
         this.usuario = usuario;
         this.dataRetirada = LocalDate.now();
         this.dataDevolucao = dataRetirada.plusDays(DIAS_PRAZO);
+    }
+
+    // Construtor para restaurar empréstimo do banco — datas preservadas
+    public Emprestimo(Livro livro, Usuario usuario, LocalDate dataRetirada, LocalDate dataDevolucao) {
+        this.livro = livro;
+        this.usuario = usuario;
+        this.dataRetirada = dataRetirada;
+        this.dataDevolucao = dataDevolucao;
     }
 
     public boolean isAtrasado() {
