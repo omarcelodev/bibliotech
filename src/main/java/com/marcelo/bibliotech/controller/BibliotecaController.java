@@ -62,7 +62,7 @@ public class BibliotecaController {
         usuarioDAO.delete(id);
     }
 
-    public void realizarEmprestimo(Livro livro, Usuario usuario)
+    public Emprestimo realizarEmprestimo(Livro livro, Usuario usuario)
             throws LivroNaoEncontradoException, LivroIndisponivelException, MultaPendenteException {
 
         if (livroDAO.findById(livro.getId()) == null) throw new LivroNaoEncontradoException();
@@ -73,6 +73,8 @@ public class BibliotecaController {
         emprestimoDAO.save(emprestimo);
         livro.changeStatus(false);
         livroDAO.update(livro);
+        
+        return emprestimo;
     }
 
     public Emprestimo realizarDevolucao(Livro livro) {

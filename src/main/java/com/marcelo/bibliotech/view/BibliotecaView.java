@@ -205,9 +205,9 @@ public class BibliotecaView {
         if (usuario == null) { System.out.println("Usuário não encontrado."); return; }
 
         try {
-            controller.realizarEmprestimo(livro, usuario);
+            Emprestimo emprestimo = controller.realizarEmprestimo(livro, usuario);
             System.out.println("Empréstimo realizado: " + livro.getTitulo() + " -> " + usuario.getNome());
-            System.out.println("Devolução prevista: " + new Emprestimo(livro, usuario).getDataDevolucao());
+            System.out.println("Devolução prevista: " + emprestimo.getDataDevolucao());
         } catch (LivroNaoEncontradoException | LivroIndisponivelException | MultaPendenteException e) {
             System.out.println("Erro: " + e.getMessage());
         }
