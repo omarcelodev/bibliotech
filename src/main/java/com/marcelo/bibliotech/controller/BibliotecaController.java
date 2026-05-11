@@ -1,8 +1,6 @@
 package com.marcelo.bibliotech.controller;
-import com.marcelo.bibliotech.repository.BibliotecaRepository;
 
 import java.util.List;
-
 import com.marcelo.bibliotech.dao.EmprestimoDAO;
 import com.marcelo.bibliotech.dao.LivroDAO;
 import com.marcelo.bibliotech.dao.UsuarioDAO;
@@ -18,7 +16,7 @@ public class BibliotecaController {
     private LivroDAO livroDAO;
     private UsuarioDAO usuarioDAO;
 
-    public BibliotecaController(BibliotecaRepository repository) {
+    public BibliotecaController() {
         this.livroDAO = new LivroDAO();
         this.usuarioDAO = new UsuarioDAO();
         this.emprestimoDAO = new EmprestimoDAO();
