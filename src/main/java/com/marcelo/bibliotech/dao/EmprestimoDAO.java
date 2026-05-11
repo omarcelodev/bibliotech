@@ -133,6 +133,7 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
         }
     }
 
+    
     private Emprestimo mapRow(ResultSet rs) throws SQLException {
         Livro livro = new Livro(
             rs.getInt("livro_id"),
