@@ -63,7 +63,7 @@ public class BibliotecaController {
     }
 
     public Emprestimo realizarEmprestimo(Livro livro, Usuario usuario)
-            throws LivroNaoEncontradoException, LivroIndisponivelException, MultaPendenteException {
+        throws LivroNaoEncontradoException, LivroIndisponivelException, MultaPendenteException {
 
         if (livroDAO.findById(livro.getId()) == null) throw new LivroNaoEncontradoException();
         if (usuario.getMulta() > 0) throw new MultaPendenteException(usuario.getNome(), usuario.getMulta());
