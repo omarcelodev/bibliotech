@@ -1,18 +1,22 @@
 package com.marcelo.bibliotech.dao;
-
 import com.marcelo.bibliotech.connection.ConnectionFactory;
 import com.marcelo.bibliotech.model.Usuario;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Responsável pela persistência e recuperação de dados
+ * relacionados à entidade Usuario.
+ */
 public class UsuarioDAO implements DAO<Usuario> {
 
     @Override
     public void save(Usuario usuario) {
         String sql = "INSERT INTO usuarios (nome, matricula, multa) VALUES (?, ?, ?)";
+
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getMatricula());
@@ -20,6 +24,7 @@ public class UsuarioDAO implements DAO<Usuario> {
             stmt.executeUpdate();
 
             ResultSet keys = stmt.getGeneratedKeys();
+
             if (keys.next()) usuario.setId(keys.getInt(1));
 
         } catch (SQLException e) {
@@ -30,16 +35,19 @@ public class UsuarioDAO implements DAO<Usuario> {
     @Override
     public Usuario findById(int id) {
         String sql = "SELECT * FROM usuarios WHERE id = ?";
+
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) return mapRow(rs);
 
         } catch (SQLException e) {
             System.out.println("Erro ao buscar usuário: " + e.getMessage());
         }
+
         return null;
     }
 
@@ -47,8 +55,9 @@ public class UsuarioDAO implements DAO<Usuario> {
     public List<Usuario> findAll() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT * FROM usuarios";
+
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) usuarios.add(mapRow(rs));
@@ -56,14 +65,16 @@ public class UsuarioDAO implements DAO<Usuario> {
         } catch (SQLException e) {
             System.out.println("Erro ao listar usuários: " + e.getMessage());
         }
+
         return usuarios;
     }
 
     @Override
     public void update(Usuario usuario) {
         String sql = "UPDATE usuarios SET nome = ?, matricula = ?, multa = ? WHERE id = ?";
+
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getMatricula());
@@ -79,8 +90,9 @@ public class UsuarioDAO implements DAO<Usuario> {
     @Override
     public void delete(int id) {
         String sql = "DELETE FROM usuarios WHERE id = ?";
+
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -90,13 +102,23 @@ public class UsuarioDAO implements DAO<Usuario> {
         }
     }
 
+    /**
+    * Converte um registro retornado do banco de dados
+    * em um objeto Usuario.
+    *
+    * @param rs resultado da consulta posicionado na linha atual
+    * @return objeto Usuario preenchido com os dados do banco
+    * @throws SQLException caso ocorra erro ao acessar os dados do ResultSet
+    */
     private Usuario mapRow(ResultSet rs) throws SQLException {
         Usuario usuario = new Usuario(
             rs.getString("nome"),
             rs.getString("matricula")
         );
+
         usuario.setId(rs.getInt("id"));
         usuario.setMulta(rs.getDouble("multa"));
+        
         return usuario;
     }
 }
