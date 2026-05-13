@@ -96,7 +96,7 @@ public class LivroDAO implements DAO<Livro> {
             rs.getString("titulo"),
             rs.getString("autor")
         );
-        livro.changeStatus(rs.getBoolean("disponivel"));
+        livro.setStatus(rs.getBoolean("disponivel"));
         return livro;
     }
 }

@@ -7,9 +7,9 @@ public class Livro {
     private int id;
     private String titulo;
     private String autor;
-    private boolean status; // True - Disponivel || False - Indisponivel
+    private boolean status; 
 
-    public Livro(int id,String titulo, String autor){
+    public Livro(int id, String titulo, String autor){
         this.id = id;
         this.titulo = titulo;
         this.autor = autor;
@@ -18,15 +18,6 @@ public class Livro {
 
     public boolean isDisponivel() {
         return status;
-    }
-
-    /**
-     * Atualiza o status de disponibilidade do livro.
-     *
-     * @param novoStatus novo estado de disponibilidade do livro
-     */
-    public void changeStatus(boolean novoStatus){
-        status = novoStatus;
     }
 
     public int getId() {
@@ -44,4 +35,14 @@ public class Livro {
     public void setId(int id) {
         this.id = id;
     }
+
+    /**
+     * Atualiza o status de disponibilidade do livro.
+     *
+     * @param novoStatus novo estado de disponibilidade do livro
+     */
+    public void setStatus(boolean novoStatus){
+        status = novoStatus;
+    }
+
 }

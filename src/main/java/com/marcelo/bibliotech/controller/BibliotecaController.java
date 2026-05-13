@@ -71,7 +71,7 @@ public class BibliotecaController {
 
         Emprestimo emprestimo = new Emprestimo(livro, usuario);
         emprestimoDAO.save(emprestimo);
-        livro.changeStatus(false);
+        livro.setStatus(false);
         livroDAO.update(livro);
         
         return emprestimo;
@@ -87,7 +87,7 @@ public class BibliotecaController {
             usuarioDAO.update(usuario);
         }
 
-        livro.changeStatus(true);
+        livro.setStatus(true);
         livroDAO.update(livro);
         emprestimoDAO.delete(emprestimo.getId());
         return emprestimo;

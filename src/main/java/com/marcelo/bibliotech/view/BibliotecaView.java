@@ -93,7 +93,7 @@ public class BibliotecaView {
         String autor = scanner.nextLine();
 
         Livro atualizado = new Livro(id, titulo, autor);
-        atualizado.changeStatus(livro.isDisponivel());
+        atualizado.setStatus(livro.isDisponivel());
         controller.atualizarLivro(atualizado);
         System.out.println("Livro atualizado.");
     }
