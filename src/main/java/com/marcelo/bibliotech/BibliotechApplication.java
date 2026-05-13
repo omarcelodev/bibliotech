@@ -1,6 +1,4 @@
 package com.marcelo.bibliotech;
-
-
 import com.marcelo.bibliotech.view.BibliotecaView;
 import com.marcelo.bibliotech.controller.BibliotecaController;
 
