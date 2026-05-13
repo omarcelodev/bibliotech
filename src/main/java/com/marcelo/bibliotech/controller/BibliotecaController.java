@@ -1,5 +1,4 @@
 package com.marcelo.bibliotech.controller;
-
 import java.util.List;
 import com.marcelo.bibliotech.dao.EmprestimoDAO;
 import com.marcelo.bibliotech.dao.LivroDAO;
@@ -8,9 +7,11 @@ import com.marcelo.bibliotech.model.Emprestimo;
 import com.marcelo.bibliotech.model.Livro;
 import com.marcelo.bibliotech.model.Usuario;
 
-
-
-
+/**
+ * Responsável pelo gerenciamento das operações principais
+ * da biblioteca, incluindo controle de livros, usuários
+ * e empréstimos.
+ */
 public class BibliotecaController {
     private EmprestimoDAO emprestimoDAO;
     private LivroDAO livroDAO;
@@ -62,6 +63,26 @@ public class BibliotecaController {
         usuarioDAO.delete(id);
     }
 
+    /**
+    * Realiza o empréstimo de um livro para um usuário.
+    *
+    * <p>O empréstimo somente é permitido quando:
+    * <ul>
+    *   <li>o livro existir no sistema;</li>
+    *   <li>o livro estiver disponível;</li>
+    *   <li>o usuário não possuir multas pendentes.</li>
+    * </ul>
+    *
+    * <p>Após a criação do empréstimo, o livro é marcado
+    * como indisponível.
+    *
+    * @param livro livro que será emprestado
+    * @param usuario usuário responsável pelo empréstimo
+    * @return empréstimo realizado
+    * @throws LivroNaoEncontradoException caso o livro não exista
+    * @throws LivroIndisponivelException caso o livro já esteja emprestado
+    * @throws MultaPendenteException caso o usuário possua multas pendentes
+    */
     public Emprestimo realizarEmprestimo(Livro livro, Usuario usuario)
         throws LivroNaoEncontradoException, LivroIndisponivelException, MultaPendenteException {
 
@@ -77,6 +98,19 @@ public class BibliotecaController {
         return emprestimo;
     }
 
+    /**
+    * Realiza a devolução de um livro emprestado.
+    *
+    * <p>Caso o empréstimo esteja atrasado, a multa calculada
+    * será adicionada ao usuário responsável.
+    *
+    * <p>Após a devolução, o livro é marcado como disponível
+    * e o empréstimo é removido do sistema.
+    *
+    * @param livro livro devolvido
+    * @return empréstimo finalizado ou {@code null}
+    *         caso nenhum empréstimo seja encontrado
+    */
     public Emprestimo realizarDevolucao(Livro livro) {
         Emprestimo emprestimo = emprestimoDAO.findByLivroId(livro.getId());
         if (emprestimo == null) return null;
