@@ -1,21 +1,27 @@
 package com.marcelo.bibliotech.dao;
-
 import com.marcelo.bibliotech.connection.ConnectionFactory;
 import com.marcelo.bibliotech.model.Emprestimo;
 import com.marcelo.bibliotech.model.Livro;
 import com.marcelo.bibliotech.model.Usuario;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Responsável pela persistência e recuperação de dados
+ * relacionados aos empréstimos do sistema.
+ *
+ * <p>Realiza consultas envolvendo livros e usuários associados
+ * a cada empréstimo.
+ */
 public class EmprestimoDAO implements DAO<Emprestimo> {
 
     @Override
     public void save(Emprestimo emprestimo) {
         String sql = "INSERT INTO emprestimos (livro_id, usuario_id, data_retirada, data_devolucao) VALUES (?, ?, ?, ?)";
+
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, emprestimo.getLivro().getId());
             stmt.setInt(2, emprestimo.getUsuario().getId());
@@ -26,11 +32,18 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
             ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) emprestimo.setId(keys.getInt(1));
 
+
         } catch (SQLException e) {
             System.out.println("Erro ao salvar empréstimo: " + e.getMessage());
         }
     }
 
+    /**
+    * Busca um empréstimo associado a um determinado livro.
+    *
+    * @param livroId identificador do livro
+    * @return empréstimo encontrado ou {@code null} caso não exista
+    */
     @Override
     public Emprestimo findById(int id) {
         String sql = """
@@ -42,45 +55,52 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
             JOIN usuarios u ON e.usuario_id = u.id
             WHERE e.id = ?
         """;
+        
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) return mapRow(rs);
 
         } catch (SQLException e) {
             System.out.println("Erro ao buscar empréstimo: " + e.getMessage());
         }
+
         return null;
     }
 
     public Emprestimo findByLivroId(int livroId) {
-    String sql = """
-        SELECT e.*,
-               l.titulo, l.autor, l.disponivel,
-               u.nome, u.matricula, u.multa
-        FROM emprestimos e
-        JOIN livros l ON e.livro_id = l.id
-        JOIN usuarios u ON e.usuario_id = u.id
-        WHERE e.livro_id = ?
-    """;
-    try (Connection conn = ConnectionFactory.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = """
+            SELECT e.*,
+                l.titulo, l.autor, l.disponivel,
+                u.nome, u.matricula, u.multa
+            FROM emprestimos e
+            JOIN livros l ON e.livro_id = l.id
+            JOIN usuarios u ON e.usuario_id = u.id
+            WHERE e.livro_id = ?
+        """;
 
-        stmt.setInt(1, livroId);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) return mapRow(rs);
+        try (Connection conn = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-    } catch (SQLException e) {
-        System.out.println("Erro ao buscar empréstimo por livro: " + e.getMessage());
+            stmt.setInt(1, livroId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) return mapRow(rs);
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar empréstimo por livro: " + e.getMessage());
+        }
+
+        return null;
     }
-    return null;
-}
 
     @Override
     public List<Emprestimo> findAll() {
         List<Emprestimo> emprestimos = new ArrayList<>();
+
         String sql = """
             SELECT e.*,
                    l.titulo, l.autor, l.disponivel,
@@ -89,23 +109,27 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
             JOIN livros l ON e.livro_id = l.id
             JOIN usuarios u ON e.usuario_id = u.id
         """;
+
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) emprestimos.add(mapRow(rs));
 
         } catch (SQLException e) {
             System.out.println("Erro ao listar empréstimos: " + e.getMessage());
         }
+
         return emprestimos;
     }
 
     @Override
     public void update(Emprestimo emprestimo) {
         String sql = "UPDATE emprestimos SET livro_id = ?, usuario_id = ?, data_retirada = ?, data_devolucao = ? WHERE id = ?";
+
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, emprestimo.getLivro().getId());
             stmt.setInt(2, emprestimo.getUsuario().getId());
@@ -122,8 +146,9 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
     @Override
     public void delete(int id) {
         String sql = "DELETE FROM emprestimos WHERE id = ?";
+
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -133,7 +158,17 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
         }
     }
 
-    
+    /**
+    * Converte um registro retornado do banco de dados
+    * em um objeto Emprestimo completo.
+    *
+    * <p>O mapeamento inclui os dados do livro e do usuário
+    * associados ao empréstimo.
+    *
+    * @param rs resultado da consulta posicionado na linha atual
+    * @return objeto Emprestimo preenchido com os dados da consulta
+    * @throws SQLException caso ocorra erro ao acessar os dados do ResultSet
+    */
     private Emprestimo mapRow(ResultSet rs) throws SQLException {
         Livro livro = new Livro(
             rs.getInt("livro_id"),
@@ -156,6 +191,7 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
             rs.getDate("data_devolucao").toLocalDate()
         );
         emprestimo.setId(rs.getInt("id"));
+
         return emprestimo;
     }
 }
