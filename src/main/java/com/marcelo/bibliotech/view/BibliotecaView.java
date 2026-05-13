@@ -4,6 +4,12 @@ import com.marcelo.bibliotech.model.*;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Responsável pela interação com o usuário via terminal.
+ *
+ * <p>Gerencia os menus e operações relacionadas
+ * a livros, usuários e empréstimos.
+ */
 public class BibliotecaView {
 
     private BibliotecaController controller;
@@ -14,6 +20,9 @@ public class BibliotecaView {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+    * Inicia o menu principal da aplicação.
+     */
     public void iniciar() {
         int opcao = -1;
         while (opcao != 0) {
