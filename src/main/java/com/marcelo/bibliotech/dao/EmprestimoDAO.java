@@ -140,7 +140,7 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
             rs.getString("titulo"),
             rs.getString("autor")
         );
-        livro.changeStatus(rs.getBoolean("disponivel"));
+        livro.setStatus(rs.getBoolean("disponivel"));
 
         Usuario usuario = new Usuario(
             rs.getString("nome"),
