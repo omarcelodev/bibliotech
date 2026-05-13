@@ -44,7 +44,6 @@ public class BibliotecaView {
         }
     }
 
-    // Livros
     private void menuLivros() {
         System.out.println("\n--- LIVROS ---");
         System.out.println("1. Cadastrar");
@@ -65,23 +64,29 @@ public class BibliotecaView {
 
     private void cadastrarLivro() {
         scanner.nextLine();
+
         System.out.print("Título: ");
         String titulo = scanner.nextLine();
+
         System.out.print("Autor: ");
         String autor = scanner.nextLine();
 
         Livro livro = new Livro(0, titulo, autor);
+
         controller.cadastrarLivro(livro);
         System.out.println("Livro cadastrado com id: " + livro.getId());
     }
 
     private void listarLivros() {
         List<Livro> livros = controller.listaLivros();
+
         if (livros.isEmpty()) {
             System.out.println("Nenhum livro cadastrado.");
             return;
         }
+
         System.out.println("\nID | Título | Autor | Disponível");
+
         livros.forEach(l -> System.out.println(
             l.getId() + " | " + l.getTitulo() + " | " + l.getAutor() + " | " + (l.isDisponivel() ? "Sim" : "Não")
         ));
@@ -90,18 +95,23 @@ public class BibliotecaView {
     private void atualizarLivro() {
         System.out.print("ID do livro: ");
         int id = scanner.nextInt();
+
         Livro livro = controller.buscaLivro(id);
+
         if (livro == null) {
             System.out.println("Livro não encontrado.");
             return;
         }
+
         scanner.nextLine();
         System.out.print("Novo título (" + livro.getTitulo() + "): ");
         String titulo = scanner.nextLine();
+
         System.out.print("Novo autor (" + livro.getAutor() + "): ");
         String autor = scanner.nextLine();
 
         Livro atualizado = new Livro(id, titulo, autor);
+
         atualizado.setStatus(livro.isDisponivel());
         controller.atualizarLivro(atualizado);
         System.out.println("Livro atualizado.");
@@ -110,11 +120,11 @@ public class BibliotecaView {
     private void removerLivro() {
         System.out.print("ID do livro: ");
         int id = scanner.nextInt();
+
         controller.removerLivro(id);
         System.out.println("Livro removido.");
     }
 
-    // Usuarios
     private void menuUsuarios() {
         System.out.println("\n--- USUÁRIOS ---");
         System.out.println("1. Cadastrar");
@@ -135,22 +145,27 @@ public class BibliotecaView {
 
     private void cadastrarUsuario() {
         scanner.nextLine();
+
         System.out.print("Nome: ");
         String nome = scanner.nextLine();
+
         System.out.print("Matrícula: ");
         String matricula = scanner.nextLine();
 
         Usuario usuario = new Usuario(nome, matricula);
+
         controller.cadastrarUsuario(usuario);
         System.out.println("Usuário cadastrado com id: " + usuario.getId());
     }
 
     private void listarUsuarios() {
         List<Usuario> usuarios = controller.listaUsuarios();
+
         if (usuarios.isEmpty()) {
             System.out.println("Nenhum usuário cadastrado.");
             return;
         }
+
         System.out.println("\nID | Nome | Matrícula | Multa");
         usuarios.forEach(u -> System.out.println(
             u.getId() + " | " + u.getNome() + " | " + u.getMatricula() + " | R$ " + u.getMulta()
@@ -160,14 +175,18 @@ public class BibliotecaView {
     private void atualizarUsuario() {
         System.out.print("ID do usuário: ");
         int id = scanner.nextInt();
+
         Usuario usuario = controller.buscarUsuario(id);
+
         if (usuario == null) {
             System.out.println("Usuário não encontrado.");
             return;
         }
+
         scanner.nextLine();
         System.out.print("Novo nome (" + usuario.getNome() + "): ");
         String nome = scanner.nextLine();
+
         System.out.print("Nova matrícula (" + usuario.getMatricula() + "): ");
         String matricula = scanner.nextLine();
 
@@ -180,11 +199,11 @@ public class BibliotecaView {
     private void removerUsuario() {
         System.out.print("ID do usuário: ");
         int id = scanner.nextInt();
+
         controller.removerUsuario(id);
         System.out.println("Usuário removido.");
     }
 
-    // Emprestimos
     private void menuEmprestimos() {
         System.out.println("\n--- EMPRÉSTIMOS ---");
         System.out.println("1. Realizar empréstimo");
@@ -204,6 +223,7 @@ public class BibliotecaView {
     private void realizarEmprestimo() {
         System.out.print("ID do livro: ");
         int livroId = scanner.nextInt();
+
         System.out.print("ID do usuário: ");
         int usuarioId = scanner.nextInt();
 
@@ -215,6 +235,7 @@ public class BibliotecaView {
 
         try {
             Emprestimo emprestimo = controller.realizarEmprestimo(livro, usuario);
+
             System.out.println("Empréstimo realizado: " + livro.getTitulo() + " -> " + usuario.getNome());
             System.out.println("Devolução prevista: " + emprestimo.getDataDevolucao());
         } catch (LivroNaoEncontradoException | LivroIndisponivelException | MultaPendenteException e) {
@@ -227,9 +248,11 @@ public class BibliotecaView {
         int livroId = scanner.nextInt();
 
         Livro livro = controller.buscaLivro(livroId);
+
         if (livro == null) { System.out.println("Livro não encontrado."); return; }
 
         Emprestimo emprestimo = controller.realizarDevolucao(livro);
+
         if (emprestimo == null) {
             System.out.println("Nenhum empréstimo ativo para este livro.");
             return;
@@ -245,10 +268,12 @@ public class BibliotecaView {
 
     private void listarEmprestimos() {
         List<Emprestimo> emprestimos = controller.listarEmprestimos();
+
         if (emprestimos.isEmpty()) {
             System.out.println("Nenhum empréstimo ativo.");
             return;
         }
+        
         System.out.println("\nID | Livro | Usuário | Devolução prevista");
         emprestimos.forEach(e -> System.out.println(
             e.getId() + " | " + e.getLivro().getTitulo() + " | " +
