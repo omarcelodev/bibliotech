@@ -1,5 +1,8 @@
 package com.marcelo.bibliotech.model;
 
+/**
+ * Representa um livro disponível para empréstimo no sistema.
+ */
 public class Livro {
     private int id;
     private String titulo;
@@ -17,6 +20,11 @@ public class Livro {
         return status;
     }
 
+    /**
+     * Atualiza o status de disponibilidade do livro.
+     *
+     * @param novoStatus novo estado de disponibilidade do livro
+     */
     public void changeStatus(boolean novoStatus){
         status = novoStatus;
     }
