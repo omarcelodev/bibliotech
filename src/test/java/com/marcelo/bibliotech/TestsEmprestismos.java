@@ -1,0 +1,74 @@
+package com.marcelo.bibliotech;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import com.marcelo.bibliotech.controller.BibliotecaController;
+import com.marcelo.bibliotech.controller.LivroIndisponivelException;
+import com.marcelo.bibliotech.controller.LivroNaoEncontradoException;
+import com.marcelo.bibliotech.controller.MultaPendenteException;
+import com.marcelo.bibliotech.dao.EmprestimoDAO;
+import com.marcelo.bibliotech.dao.LivroDAO;
+import com.marcelo.bibliotech.dao.UsuarioDAO;
+import com.marcelo.bibliotech.model.Emprestimo;
+import com.marcelo.bibliotech.model.Livro;
+import com.marcelo.bibliotech.model.Usuario;
+
+@ExtendWith(MockitoExtension.class)
+public class TestsEmprestismos {
+    @Mock private LivroDAO livroDAO;
+    @Mock private UsuarioDAO usuarioDAO;
+    @Mock private EmprestimoDAO emprestimoDAO;
+
+    @InjectMocks private BibliotecaController controller;
+
+    private Livro livro;
+    private Usuario usuario;
+
+    @BeforeEach
+    void setup() {
+        livro = new Livro(1, "Clean Code", "Robert Martin");
+        usuario = new Usuario("Ana Luísa", "20251234");
+    }
+
+    @Test
+    void realiazarEmprestimo_deveRetornarEmprestimo_quandoDadosValidos()
+            throws LivroNaoEncontradoException, LivroIndisponivelException, MultaPendenteException {
+        Emprestimo resultado = controller.realizarEmprestimo(livro, usuario);
+
+        assertNotNull(resultado);
+        assertFalse(livro.isDisponivel());
+        verify(emprestimoDAO).save(any(Emprestimo.class));
+        verify(livroDAO).update(livro);
+    }
+
+    @Test
+    void realizarEmprestimo_deveLancarExcessaoQuandoLivroForNull(){
+        assertThrows(LivroNaoEncontradoException.class, () -> controller.realizarEmprestimo(null, usuario));
+    }
+
+    @Test
+    void realizarEmprestimo_deveLancarExcessaoQuandoLivroIndisponivel(){
+        livro.setStatus(false);
+        assertThrows(LivroIndisponivelException.class, () -> controller.realizarEmprestimo(livro, usuario));
+    }
+
+    @Test
+    void realizarEmprestimo_deveLancarExcessaoQuandoUsuarioTemMultaPendente(){
+        usuario.setMulta(1);
+        assertThrows(MultaPendenteException.class, () -> controller.realizarEmprestimo(livro, usuario));
+    }
+    
+    @Test
+    void realizarDevolucao_deveRetornarEmprestimo(){
+        
+    }
+
+}
