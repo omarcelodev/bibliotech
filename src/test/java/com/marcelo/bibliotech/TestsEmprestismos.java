@@ -1,9 +1,16 @@
 package com.marcelo.bibliotech;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -67,8 +74,45 @@ public class TestsEmprestismos {
     }
     
     @Test
-    void realizarDevolucao_deveRetornarEmprestimo(){
-        
+    void realizarDevolucao_deveRetornarEmprestimo_quandoNoPrazo(){
+        LocalDate hoje = LocalDate.now();
+        Emprestimo emprestimo = new Emprestimo(livro, usuario, hoje.minusDays(3), hoje.plusDays(4));
+
+        when(emprestimoDAO.findByLivroId(livro.getId())).thenReturn(emprestimo);
+
+        Emprestimo resultado = controller.realizarDevolucao(livro);
+
+        assertNotNull(resultado);
+        assertEquals(0.0, usuario.getMulta());
+        assertTrue(livro.isDisponivel());
+        verify(usuarioDAO, never()).update(usuario);
+        verify(emprestimoDAO).delete(emprestimo.getId());
     }
 
+    @Test
+    void realizarDevolucao_deveAplicarMulta_quandoAtrasado() {
+        LocalDate hoje = LocalDate.now();
+        Emprestimo emprestimo = new Emprestimo(livro, usuario, hoje.minusDays(10), hoje.minusDays(3));
+
+        when(emprestimoDAO.findByLivroId(livro.getId())).thenReturn(emprestimo);
+
+        Emprestimo resultado = controller.realizarDevolucao(livro);
+
+        assertNotNull(resultado);
+        assertEquals(6.0, usuario.getMulta());
+        verify(usuarioDAO).update(usuario);
+        verify(emprestimoDAO).delete(emprestimo.getId());
+    }
+
+    @Test
+    void realizarDevolucao_deveRetornarNull_quandoSemEmprestimoAtivo() {
+        
+        when(emprestimoDAO.findByLivroId(livro.getId())).thenReturn(null);
+
+        Emprestimo resultado = controller.realizarDevolucao(livro);
+
+        assertNull(resultado);
+        verifyNoInteractions(usuarioDAO);
+        verify(livroDAO, never()).update(any());
+    }
 }

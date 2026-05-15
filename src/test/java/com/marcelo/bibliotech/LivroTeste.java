@@ -49,3 +49,4 @@ public class LivroTeste {
         assertNotNull(encontrado);
         assertEquals(1, encontrado.getId());
     }
+}
