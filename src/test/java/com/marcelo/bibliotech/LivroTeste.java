@@ -49,3 +49,17 @@ public class LivroTeste {
         assertNotNull(encontrado);
         assertEquals(1, encontrado.getId());
     }
+
+    @Test
+    void deveAtualizarLivroExistente() {
+    Livro livroAtualizado = new Livro(1, "Diário de um banana", "Jeff Kinney");
+    controller.atualizarLivro(livroAtualizado);
+    verify(livroDAO, times(1)).update(livroAtualizado);
+    }
+
+    @Test
+    void deveRemoverLivroPorId() {
+    int idParaRemover = 1;
+    controller.removerLivro(idParaRemover);
+    verify(livroDAO, times(1)).delete(idParaRemover);
+    }
