@@ -43,8 +43,6 @@ public class TratamentoErrosTeste {
         usuario.setId(1);
     }
 
-    // ─── Campos Vazios ────────────────────────────────────────────────────────────
-
     @Test
     void testarEmprestimoComLivroNulo() {
         assertThrows(LivroNaoEncontradoException.class, () ->
@@ -67,8 +65,6 @@ public class TratamentoErrosTeste {
         assertDoesNotThrow(() -> controller.cadastrarLivro(livroSemTitulo));
     }
 
-    // ─── Dados Inválidos ──────────────────────────────────────────────────────────
-
     @Test
     void testarEmprestimoComUsuarioComMulta() {
         usuario.setMulta(50.0);
@@ -90,8 +86,6 @@ public class TratamentoErrosTeste {
         );
     }
 
-    // ─── IDs Inexistentes ─────────────────────────────────────────────────────────
-
     @Test
     void testarBuscaLivroIdInexistente() {
         Livro encontrado = controller.buscaLivro(999);
@@ -110,8 +104,6 @@ public class TratamentoErrosTeste {
         var resultado = controller.realizarDevolucao(livro);
         assertNull(resultado);
     }
-
-    // ─── Mensagens de Erro ────────────────────────────────────────────────────────
 
     @Test
     void testarMensagemLivroNaoEncontrado() {

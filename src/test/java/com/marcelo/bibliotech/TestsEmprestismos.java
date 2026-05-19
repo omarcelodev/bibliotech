@@ -1,4 +1,5 @@
 package com.marcelo.bibliotech;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,6 +12,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import java.time.LocalDate;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,20 +60,9 @@ public class TestsEmprestismos {
     }
 
     @Test
-    void realizarEmprestimo_deveLancarExcessaoQuandoLivroForNull(){
-        assertThrows(LivroNaoEncontradoException.class, () -> controller.realizarEmprestimo(null, usuario));
-    }
-
-    @Test
     void realizarEmprestimo_deveLancarExcessaoQuandoLivroIndisponivel(){
         livro.setStatus(false);
         assertThrows(LivroIndisponivelException.class, () -> controller.realizarEmprestimo(livro, usuario));
-    }
-
-    @Test
-    void realizarEmprestimo_deveLancarExcessaoQuandoUsuarioTemMultaPendente(){
-        usuario.setMulta(1);
-        assertThrows(MultaPendenteException.class, () -> controller.realizarEmprestimo(livro, usuario));
     }
     
     @Test
@@ -114,5 +106,55 @@ public class TestsEmprestismos {
         assertNull(resultado);
         verifyNoInteractions(usuarioDAO);
         verify(livroDAO, never()).update(any());
+    }
+
+    @Test
+    void listarEmprestimos_deveRetornarLista_quandoExistemEmprestimos() {
+
+        LocalDate hoje = LocalDate.now();
+        Emprestimo emprestimo1 = new Emprestimo(livro, usuario, hoje.minusDays(2), hoje.plusDays(5));
+        Emprestimo emprestimo2 = new Emprestimo(livro, usuario, hoje.minusDays(1), hoje.plusDays(6));
+
+        when(emprestimoDAO.findAll()).thenReturn(List.of(emprestimo1, emprestimo2));
+
+        List<Emprestimo> resultado = controller.listarEmprestimos();
+
+        assertEquals(2, resultado.size());
+        verify(emprestimoDAO).findAll();
+    }
+
+    @Test
+    void listarEmprestimos_deveRetornarListaVazia_quandoNaoExistemEmprestimos() {
+
+        when(emprestimoDAO.findAll()).thenReturn(List.of());
+
+        List<Emprestimo> resultado = controller.listarEmprestimos();
+
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+        verify(emprestimoDAO).findAll();
+    }
+
+    @Test
+    void realizarEmprestimo_deveAdicionarAoHistorico_quandoBemSucedido()
+            throws LivroNaoEncontradoException, LivroIndisponivelException, MultaPendenteException {
+
+        Livro livro2 = new Livro(2, "Refactoring", "Martin Fowler");
+
+        controller.realizarEmprestimo(livro, usuario);
+        controller.realizarEmprestimo(livro2, usuario);
+
+        assertEquals(2, usuario.getHistoricoEmprestimos().size());
+        assertEquals("Clean Code",  usuario.getHistoricoEmprestimos().get(0).getLivro().getTitulo());
+        assertEquals("Refactoring", usuario.getHistoricoEmprestimos().get(1).getLivro().getTitulo());
+    }
+
+    @Test
+    void exibirHistorico_naoDeveLancarExcecao_quandoHistoricoPopulado()
+            throws LivroNaoEncontradoException, LivroIndisponivelException, MultaPendenteException {
+
+        controller.realizarEmprestimo(livro, usuario);
+
+        assertDoesNotThrow(() -> usuario.exibirHistorico());
     }
 }
