@@ -1,4 +1,5 @@
 package com.marcelo.bibliotech;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -129,8 +130,31 @@ public class TestsEmprestismos {
 
         List<Emprestimo> resultado = controller.listarEmprestimos();
 
-        assertNotNull(resultado);        // nunca null — só vazia
+        assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
         verify(emprestimoDAO).findAll();
+    }
+
+    @Test
+    void realizarEmprestimo_deveAdicionarAoHistorico_quandoBemSucedido()
+            throws LivroNaoEncontradoException, LivroIndisponivelException, MultaPendenteException {
+
+        Livro livro2 = new Livro(2, "Refactoring", "Martin Fowler");
+
+        controller.realizarEmprestimo(livro, usuario);
+        controller.realizarEmprestimo(livro2, usuario);
+
+        assertEquals(2, usuario.getHistoricoEmprestimos().size());
+        assertEquals("Clean Code",  usuario.getHistoricoEmprestimos().get(0).getLivro().getTitulo());
+        assertEquals("Refactoring", usuario.getHistoricoEmprestimos().get(1).getLivro().getTitulo());
+    }
+
+    @Test
+    void exibirHistorico_naoDeveLancarExcecao_quandoHistoricoPopulado()
+            throws LivroNaoEncontradoException, LivroIndisponivelException, MultaPendenteException {
+
+        controller.realizarEmprestimo(livro, usuario);
+
+        assertDoesNotThrow(() -> usuario.exibirHistorico());
     }
 }

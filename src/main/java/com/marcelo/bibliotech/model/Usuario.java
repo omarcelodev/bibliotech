@@ -1,5 +1,7 @@
 package com.marcelo.bibliotech.model;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Representa um usuário cadastrado no sistema da biblioteca.
@@ -63,6 +65,10 @@ public class Usuario {
 
     public double getMulta() {
         return multa;
+    }
+
+    public List<Emprestimo> getHistoricoEmprestimos() {
+        return Collections.unmodifiableList(historicoEmprestios);
     }
 
     public void setMulta(double multa) {

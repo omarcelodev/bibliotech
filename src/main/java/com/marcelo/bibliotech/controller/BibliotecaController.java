@@ -92,6 +92,7 @@ public class BibliotecaController {
 
         Emprestimo emprestimo = new Emprestimo(livro, usuario);
         emprestimoDAO.save(emprestimo);
+        usuario.adiconarHistorico(emprestimo);
         livro.setStatus(false);
         livroDAO.update(livro);
         
