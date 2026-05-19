@@ -1,5 +1,4 @@
 package com.marcelo.bibliotech;
-
 import com.marcelo.bibliotech.controller.BibliotecaController;
 import com.marcelo.bibliotech.dao.UsuarioDAO;
 import com.marcelo.bibliotech.model.Usuario;
@@ -9,9 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -32,15 +29,11 @@ public class UsuarioTeste {
         usuario.setId(1);
     }
 
-    // ─── Cadastro ────────────────────────────────────────────────────────────────
-
     @Test
     void testarCadastroUsuario() {
         controller.cadastrarUsuario(usuario);
         verify(usuarioDAO, times(1)).save(usuario);
     }
-
-    // ─── Listagem ─────────────────────────────────────────────────────────────────
 
     @Test
     void testarListagemUsuarios() {
@@ -61,8 +54,6 @@ public class UsuarioTeste {
         assertTrue(usuarios.isEmpty());
     }
 
-    // ─── Atualização ──────────────────────────────────────────────────────────────
-
     @Test
     void testarAtualizacaoUsuario() {
         usuario.setNome("Rafael Atualizado");
@@ -72,8 +63,6 @@ public class UsuarioTeste {
 
         verify(usuarioDAO, times(1)).update(usuario);
     }
-
-    // ─── Exclusão ─────────────────────────────────────────────────────────────────
 
     @Test
     void testarExclusaoUsuario() {

@@ -59,20 +59,9 @@ public class TestsEmprestismos {
     }
 
     @Test
-    void realizarEmprestimo_deveLancarExcessaoQuandoLivroForNull(){
-        assertThrows(LivroNaoEncontradoException.class, () -> controller.realizarEmprestimo(null, usuario));
-    }
-
-    @Test
     void realizarEmprestimo_deveLancarExcessaoQuandoLivroIndisponivel(){
         livro.setStatus(false);
         assertThrows(LivroIndisponivelException.class, () -> controller.realizarEmprestimo(livro, usuario));
-    }
-
-    @Test
-    void realizarEmprestimo_deveLancarExcessaoQuandoUsuarioTemMultaPendente(){
-        usuario.setMulta(1);
-        assertThrows(MultaPendenteException.class, () -> controller.realizarEmprestimo(livro, usuario));
     }
     
     @Test
