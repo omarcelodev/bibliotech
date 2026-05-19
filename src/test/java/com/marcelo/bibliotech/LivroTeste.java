@@ -50,7 +50,7 @@ public class LivroTeste {
         assertEquals(1, encontrado.getId());
     }
 
-     @Test
+    @Test
     void deveAtualizarLivroExistente() {
     Livro livroAtualizado = new Livro(1, "Diário de um banana", "Jeff Kinney");
     controller.atualizarLivro(livroAtualizado);
@@ -63,4 +63,12 @@ public class LivroTeste {
     controller.removerLivro(idParaRemover);
     verify(livroDAO, times(1)).delete(idParaRemover);
     }
+
+    @Test
+    void deveFalharQuandoTituloEAutorForemNulos() {
+    Livro livroInvalido = new Livro(3, null, null);
+    assertNull(livroInvalido.getTitulo(), "titulo deveria ser nulo");
+    assertNull(livroInvalido.getAutor(), "autor deveria ser nulo");
+    }
+    
 }
