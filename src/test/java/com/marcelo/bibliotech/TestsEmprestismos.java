@@ -11,6 +11,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import java.time.LocalDate;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -114,5 +116,32 @@ public class TestsEmprestismos {
         assertNull(resultado);
         verifyNoInteractions(usuarioDAO);
         verify(livroDAO, never()).update(any());
+    }
+
+    @Test
+    void listarEmprestimos_deveRetornarLista_quandoExistemEmprestimos() {
+
+        LocalDate hoje = LocalDate.now();
+        Emprestimo emprestimo1 = new Emprestimo(livro, usuario, hoje.minusDays(2), hoje.plusDays(5));
+        Emprestimo emprestimo2 = new Emprestimo(livro, usuario, hoje.minusDays(1), hoje.plusDays(6));
+
+        when(emprestimoDAO.findAll()).thenReturn(List.of(emprestimo1, emprestimo2));
+
+        List<Emprestimo> resultado = controller.listarEmprestimos();
+
+        assertEquals(2, resultado.size());
+        verify(emprestimoDAO).findAll();
+    }
+
+    @Test
+    void listarEmprestimos_deveRetornarListaVazia_quandoNaoExistemEmprestimos() {
+
+        when(emprestimoDAO.findAll()).thenReturn(List.of());
+
+        List<Emprestimo> resultado = controller.listarEmprestimos();
+
+        assertNotNull(resultado);        // nunca null — só vazia
+        assertTrue(resultado.isEmpty());
+        verify(emprestimoDAO).findAll();
     }
 }
