@@ -3,6 +3,7 @@ import java.util.List;
 import com.marcelo.bibliotech.dao.EmprestimoDAO;
 import com.marcelo.bibliotech.dao.LivroDAO;
 import com.marcelo.bibliotech.dao.UsuarioDAO;
+import com.marcelo.bibliotech.model.Cliente;
 import com.marcelo.bibliotech.model.Emprestimo;
 import com.marcelo.bibliotech.model.Livro;
 import com.marcelo.bibliotech.model.Usuario;
@@ -130,5 +131,22 @@ public class BibliotecaController {
 
     public List<Emprestimo> listarEmprestimos() {
         return emprestimoDAO.findAll();
+    }
+
+    /**
+    * Realiza o pagamento da multa pendente de um cliente.
+    *
+    * @param usuarioId id do usuário que irá pagar a multa
+    */
+    public void pagarMulta(int usuarioId) {
+        Usuario usuario = usuarioDAO.findById(usuarioId);
+
+        if (usuario instanceof Cliente cliente) {
+            cliente.pagarMulta();
+            usuarioDAO.update(cliente);
+            System.out.println("Multa paga com sucesso!");
+        } else {
+            System.out.println("Usuário não encontrado ou não é um cliente.");
+        }
     }
 }

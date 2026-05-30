@@ -1,5 +1,6 @@
 package com.marcelo.bibliotech.dao;
 import com.marcelo.bibliotech.connection.ConnectionFactory;
+import com.marcelo.bibliotech.model.Cliente;
 import com.marcelo.bibliotech.model.Emprestimo;
 import com.marcelo.bibliotech.model.Livro;
 import com.marcelo.bibliotech.model.Usuario;
@@ -177,7 +178,7 @@ public class EmprestimoDAO implements DAO<Emprestimo> {
         );
         livro.setStatus(rs.getBoolean("disponivel"));
 
-        Usuario usuario = new Usuario(
+        Usuario usuario = new Cliente(
             rs.getString("nome"),
             rs.getString("matricula")
         );

@@ -1,6 +1,7 @@
 package com.marcelo.bibliotech;
 import com.marcelo.bibliotech.controller.BibliotecaController;
 import com.marcelo.bibliotech.dao.UsuarioDAO;
+import com.marcelo.bibliotech.model.Cliente;
 import com.marcelo.bibliotech.model.Emprestimo;
 import com.marcelo.bibliotech.model.Livro;
 import com.marcelo.bibliotech.model.Usuario;
@@ -29,7 +30,7 @@ public class UsuarioTeste {
 
     @BeforeEach
     void setUp() {
-        usuario = new Usuario("Rafael", "MAT-001");
+        usuario = new Cliente("Rafael", "MAT-001");
         usuario.setId(1);
     }
 

@@ -7,6 +7,7 @@ import com.marcelo.bibliotech.controller.MultaPendenteException;
 import com.marcelo.bibliotech.dao.EmprestimoDAO;
 import com.marcelo.bibliotech.dao.LivroDAO;
 import com.marcelo.bibliotech.dao.UsuarioDAO;
+import com.marcelo.bibliotech.model.Cliente;
 import com.marcelo.bibliotech.model.Livro;
 import com.marcelo.bibliotech.model.Usuario;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ public class TratamentoErrosTeste {
     @BeforeEach
     void setUp() {
         livro = new Livro(1, "Percy Jackson", "Rick Riordan");
-        usuario = new Usuario("Rafael", "MAT-001");
+        usuario = new Cliente("Rafael", "MAT-001");
         usuario.setId(1);
     }
 
@@ -52,7 +53,7 @@ public class TratamentoErrosTeste {
 
     @Test
     void testarCadastroUsuarioComNomeVazio() {
-        Usuario usuarioSemNome = new Usuario("", "MAT-002");
+        Usuario usuarioSemNome = new Cliente("", "MAT-002");
         // O save deve ser chamado mesmo assim — validação de campo vazio
         // é responsabilidade que ainda não existe no controller.
         // Este teste documenta o comportamento atual.
