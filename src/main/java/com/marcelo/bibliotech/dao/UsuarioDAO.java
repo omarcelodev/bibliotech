@@ -1,5 +1,7 @@
 package com.marcelo.bibliotech.dao;
 import com.marcelo.bibliotech.connection.ConnectionFactory;
+import com.marcelo.bibliotech.model.Administrador;
+import com.marcelo.bibliotech.model.Cliente;
 import com.marcelo.bibliotech.model.Usuario;
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ public class UsuarioDAO implements DAO<Usuario> {
 
     @Override
     public void save(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (nome, matricula, multa) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO usuarios (nome, matricula, multa, tipo) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -21,6 +23,7 @@ public class UsuarioDAO implements DAO<Usuario> {
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getMatricula());
             stmt.setDouble(3, usuario.getMulta());
+            stmt.setString(4, usuario instanceof Administrador ? "ADMINISTRADOR" : "CLIENTE");
             stmt.executeUpdate();
 
             ResultSet keys = stmt.getGeneratedKeys();
@@ -71,7 +74,7 @@ public class UsuarioDAO implements DAO<Usuario> {
 
     @Override
     public void update(Usuario usuario) {
-        String sql = "UPDATE usuarios SET nome = ?, matricula = ?, multa = ? WHERE id = ?";
+        String sql = "UPDATE usuarios SET nome = ?, matricula = ?, multa = ?, tipo = ? WHERE id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -79,7 +82,8 @@ public class UsuarioDAO implements DAO<Usuario> {
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getMatricula());
             stmt.setDouble(3, usuario.getMulta());
-            stmt.setInt(4, usuario.getId());
+            stmt.setString(4, usuario instanceof Administrador ? "ADMINISTRADOR" : "CLIENTE");
+            stmt.setInt(5, usuario.getId());
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -111,10 +115,11 @@ public class UsuarioDAO implements DAO<Usuario> {
     * @throws SQLException caso ocorra erro ao acessar os dados do ResultSet
     */
     private Usuario mapRow(ResultSet rs) throws SQLException {
-        Usuario usuario = new Usuario(
-            rs.getString("nome"),
-            rs.getString("matricula")
-        );
+        String tipo = rs.getString("tipo");
+
+        Usuario usuario = tipo.equals("ADMINISTRADOR")
+            ? new Administrador(rs.getString("nome"), rs.getString("matricula"))
+            : new Cliente(rs.getString("nome"), rs.getString("matricula"));
 
         usuario.setId(rs.getInt("id"));
         usuario.setMulta(rs.getDouble("multa"));
