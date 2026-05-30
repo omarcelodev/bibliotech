@@ -9,7 +9,7 @@ import java.util.List;
  * <p>Armazena informações de identificação, controle de multas
  * e histórico de empréstimos realizados.
  */
-public class Usuario {
+public abstract class Usuario {
     private int id;
     private String nome;
     private String matricula;

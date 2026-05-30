@@ -23,9 +23,9 @@ public class BibliotechApplicationTests {
         );
 
         // --- USUARIO ---
-        Usuario usuario = new Usuario("Ana Luísa", "20251234");
-        usuarioDAO.save(usuario);
-        System.out.println("Usuário salvo com id: " + usuario.getId());
+        Cliente cliente = new Cliente("Ana Luísa", "20251234");
+        usuarioDAO.save(cliente);
+        System.out.println("Usuário salvo com id: " + cliente.getId());
 
         System.out.println("--- Todos os usuários ---");
         usuarioDAO.findAll().forEach(u ->
@@ -33,7 +33,7 @@ public class BibliotechApplicationTests {
         );
 
         // --- EMPRESTIMO ---
-        Emprestimo emprestimo = new Emprestimo(livro, usuario);
+        Emprestimo emprestimo = new Emprestimo(livro, cliente);
         emprestimoDAO.save(emprestimo);
         System.out.println("Empréstimo salvo com id: " + emprestimo.getId());
 

@@ -27,6 +27,7 @@ import com.marcelo.bibliotech.controller.MultaPendenteException;
 import com.marcelo.bibliotech.dao.EmprestimoDAO;
 import com.marcelo.bibliotech.dao.LivroDAO;
 import com.marcelo.bibliotech.dao.UsuarioDAO;
+import com.marcelo.bibliotech.model.Cliente;
 import com.marcelo.bibliotech.model.Emprestimo;
 import com.marcelo.bibliotech.model.Livro;
 import com.marcelo.bibliotech.model.Usuario;
@@ -45,7 +46,7 @@ public class TestsEmprestismos {
     @BeforeEach
     void setup() {
         livro = new Livro(1, "Clean Code", "Robert Martin");
-        usuario = new Usuario("Ana Luísa", "20251234");
+        usuario = new Cliente("Ana Luísa", "20251234");
     }
 
     @Test
