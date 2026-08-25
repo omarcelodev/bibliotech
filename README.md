@@ -311,4 +311,6 @@ Working on Bibliotech gave us hands-on practice with the topics covered in the c
 
 ## License
 
-No license file is included in this repository. Unless a license is added later, the code is subject to the default copyright rules of the project owner.
+This project is licensed under the [MIT License](LICENSE).
+
+© 2026 Marcelo Gomes
